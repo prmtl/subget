@@ -1,4 +1,4 @@
-import urllib, zipfile, subgetcore, httplib, os, hashlib, subprocess
+import urllib, subgetcore, os, hashlib
 
 # thanks to gim,krzynio,dosiu,hash 2oo8 for this function
 def f(z):
@@ -26,7 +26,7 @@ class PluginMain(subgetcore.SubgetPlugin):
 
     def check_exists(self, File, resultsClass):
         if File is None:
-            return {'errInfo': "NOT_FOUND"}
+            return subgetcore.NOT_FOUND
 
         d = hashlib.md5(open(File, "rb").read(10485760)).hexdigest()
         Dir = "/unit_napisy/dl.php?l="+self.language.upper()+"&f="+d+"&t="+f(d)+"&v=other&kolejka=false&nick=&pass=&napios=Linux"
@@ -39,13 +39,13 @@ class PluginMain(subgetcore.SubgetPlugin):
             resultsClass.append(self.language.lower(), 'napiprojekt.pl', os.path.basename(File), Dir, {'file': File, 'url': 'http://napiprojekt.pl'+Dir}, 'napiprojekt.pl', File)
             return True
         else:
-            return {'errInfo': "NOT_FOUND"}
+            return subgetcore.NOT_FOUND
 
 
 
     def download_by_data(self, File, SavePath):
         # method of downloading subtitles - from already parsed URL (with calculated and fixed md5 sums)
-        if File['file'][0:7] == "http://":
+        if File['file'].startswith('http://'):
             subtitleZipped = urllib.urlopen(File).read()
 
         else: # calculating sums
@@ -56,4 +56,4 @@ class PluginMain(subgetcore.SubgetPlugin):
         if subtitleZipped and subtitleZipped != "NPc0":
             return self.unSevenZip(subtitleZipped, SavePath)
         else:
-            return {'errInfo': "NOT_FOUND"}
+            return subgetcore.NOT_FOUND

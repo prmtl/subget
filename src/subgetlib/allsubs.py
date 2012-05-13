@@ -67,7 +67,7 @@ class PluginMain(subgetcore.SubgetPlugin):
         if not response or not data:
             return False
 
-        TMPName = self.temporaryPath(File['file'])
+        TMPName = self.temporaryPath()
 
         Handler = open(TMPName, "wb")
         Handler.write(data)

@@ -1,11 +1,23 @@
 """ Subget core library """
 
-import filemanagers, os, re, httplib, logging, inspect, traceback, subprocess, zipfile
+import httplib
+import inspect
+import logging
+import os
+import re
+import subprocess
+import tempfile
+import traceback
+import zipfile
+
 from collections import defaultdict
 from time import strftime, localtime
 from StringIO import StringIO
 
-class Logging:
+# returned when file was not found
+NOT_FOUND = {'errInfo': "NOT_FOUND"}
+
+class Logging(object):
     logger = None
 
     # -1 = Don't log any messages even important too
@@ -146,7 +158,7 @@ def languageFromName(Name):
     return countries.get(Name, Name)
 
 
-class SubtitlesList:
+class SubtitlesList(object):
     """ Creates a list of subtitles, easy to use in plugins """
 
     results = list()
@@ -160,7 +172,7 @@ class SubtitlesList:
         """ Called by Subget to get list of Subtitles """
         return [self.results]
 
-class Hooking:
+class Hooking(object):
     Hooks = defaultdict(list) # list of all hooks
 
     def connectHook(self, name, method):
@@ -200,7 +212,7 @@ class Hooking:
         return data       
 
 
-class SubgetPlugin:
+class SubgetPlugin(object):
     Subget = None
     HTTPTimeout = 3
     contextMenu = list()
@@ -231,7 +243,7 @@ class SubgetPlugin:
               File - you must manually check if it exists  
         """
 
-        TMPName = self.temporaryPath(os.path.basename(SavePath))
+        TMPName = self.temporaryPath()
 
         try:
             Handler = open(TMPName, "wb")
@@ -310,13 +322,9 @@ class SubgetPlugin:
 
         return False
 
-    def temporaryPath(self, fileName):
+    def temporaryPath(self):
         """ Determinates temporary paths """
-
-        if os.name == "nt": # WINDOWS "THE PROBLEMATIC OS"
-            return os.path.expanduser("~").replace("\\\\", "/")+"/"+os.path.basename(fileName)+".tmp"
-        else: # UNIX, Linux, *BSD
-            return "/tmp/"+os.path.basename(fileName)
+        return tempfile.mkstemp()
 
 
     def HTTPGet(self, Server, Request, Headers=None):
