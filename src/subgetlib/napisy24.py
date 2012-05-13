@@ -1,4 +1,4 @@
-import httplib, urllib, time, os, hashlib, subprocess, re, zipfile, subgetcore
+import urllib, os, re, subgetcore
 
 ####
 PluginInfo = { 'Requirements' : { 'OS' : 'All'}, 'API': 2, 'Authors': 'webnull', 'domain': 'napisy24.pl' }
@@ -13,7 +13,7 @@ class PluginMain(subgetcore.SubgetPlugin):
     def getListOfSubtitles(self, movieRealName, File, resultsClass):
         response, data = self.HTTPGet('napisy24.pl', "/search.php?str="+urllib.quote_plus(movieRealName))
 
-        if data == False:
+        if not data:
             return False
 
         nodes = list()
@@ -120,10 +120,10 @@ class PluginMain(subgetcore.SubgetPlugin):
                 return True
             else:
                 # This isn't a constant, this is a string-error code that subget recognize
-                return {'errInfo': "NOT_FOUND"}
+                return subgetcore.NOT_FOUND
 
         else:
-            return {'errInfo': "NOT_FOUND"}
+            return subgetcore.NOT_FOUND
 
 
     def download_by_data(self, File, SavePath):
@@ -136,7 +136,7 @@ class PluginMain(subgetcore.SubgetPlugin):
                 break
 
         if Cookies is None:
-            return {'errInfo': "NOT_FOUND"}
+            return subgetcore.NOT_FOUND
 
         PHPSESSID = re.findall('PHPSESSID=([A-Za-z-_0-9]+);', Cookies)
 

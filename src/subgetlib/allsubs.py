@@ -55,10 +55,10 @@ class PluginMain(subgetcore.SubgetPlugin):
                 subtitleList = self.getListOfSubtitles(movieName, File, results)
                 return True
             else:
-                return {'errInfo': "NOT_FOUND"}
+                return subgetcore.NOT_FOUND
 
         else:
-            return {'errInfo': "NOT_FOUND"}
+            return subgetcore.NOT_FOUND
 
 
     def download_by_data(self, File, SavePath):
