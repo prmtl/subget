@@ -2,6 +2,7 @@
 #-*- coding: utf-8 -*-
 import getopt, sys, os, glob, time, gettext, locale, xml.dom.minidom
 import traceback
+from collections import Iterable
 from threading import Thread
 import subgetcore # libraries
 from pango import FontDescription
@@ -538,7 +539,7 @@ class SubGet:
             elif self.plugins[Plugin].PluginInfo['API'] == 2:
                 Results = self.plugins[Plugin].instance.download_list(self.files).output()
 
-            if Results is None:
+            if Results is None or not isinstance(Results, Iterable):
                 self.Logging.output("[plugin:"+Plugin+"] "+_("ERROR: Cannot import"), "warning", True)
             else:
                 for Result in Results:
